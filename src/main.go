@@ -5,10 +5,8 @@ import (
 	"log"
 	"os"
 	"server/src/listener"
-	"server/src/message"
 	"server/src/script"
 	"server/src/script/libs"
-	"server/src/state"
 	"time"
 )
 
@@ -37,12 +35,12 @@ func main() {
 	}
 	log.Println("Listener initialized!")
 
-	state := &state.State{Listener: listener, Script: script}
+	state := &State{Listener: listener, Script: script}
 
 	listener.OnClientConnected = script.ClientConnected
 	listener.OnClientDisconnected = script.ClientDisconnected
 	listener.OnMessageReceived = func(sender int, rawMessage string) {
-		message := message.ParseRawMessage(rawMessage)
+		message := ParseRawMessage(rawMessage)
 		handlerFn := FindHandlerFn(nativeHandlers, message.Name)
 
 		if handlerFn != nil {
@@ -52,7 +50,7 @@ func main() {
 		}
 	}
 
-	libs.RegisterListenerLib(state)
+	libs.RegisterListenerLib(script.L, listener)
 	script.Init()
 
 	for listener.Running() {

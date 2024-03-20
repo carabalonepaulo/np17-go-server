@@ -3,7 +3,6 @@ package libs
 import (
 	"fmt"
 	"server/src/listener"
-	"server/src/state"
 
 	"github.com/Shopify/go-lua"
 )
@@ -44,9 +43,8 @@ func DumpStack(L *lua.State) {
 	fmt.Println("-----------------------------------")
 }
 
-func RegisterListenerLib(state *state.State) {
-	l := state.Script.L
-	l.PushUserData(state.Listener)
+func RegisterListenerLib(l *lua.State, listener *listener.Listener) {
+	l.PushUserData(listener)
 
 	if lua.NewMetaTable(l, "Listener") {
 		// local t = {}

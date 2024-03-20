@@ -145,3 +145,8 @@
 2024/03/20 12:05:09 Script engine initialized!
 2024/03/20 12:05:09 Listener initialized!
 2024/03/20 12:06:58 accept tcp [::]:50000: use of closed network connection
+2024/03/20 15:33:30 Script engine initialized!
+2024/03/20 15:33:30 Listener initialized!
+2024/03/20 15:34:55 accept tcp [::]:50000: use of closed network connection
+2024/03/20 15:35:51 Script engine initialized!
+2024/03/20 15:35:51 Listener initialized!

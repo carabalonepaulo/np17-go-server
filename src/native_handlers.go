@@ -2,14 +2,12 @@ package main
 
 import (
 	"log"
-	"server/src/message"
-	"server/src/state"
 )
 
 type HandlerFn func(
-	state *state.State,
+	state *State,
 	sender int,
-	message *message.Message,
+	message *Message,
 )
 
 type Handler struct {
@@ -34,15 +32,15 @@ func NativeHandlers() []Handler {
 	}
 }
 
-func HandleAuth(state *state.State, sender int, message *message.Message) {
+func HandleAuth(state *State, sender int, message *Message) {
 	log.Println("Auth message received!")
 	state.Listener.Kick(sender)
 }
 
-func HandleSignIn(state *state.State, sender int, message *message.Message) {
+func HandleSignIn(state *State, sender int, message *Message) {
 	log.Println("SignIn message received!")
 }
 
-func HandleSignUp(state *state.State, sender int, message *message.Message) {
+func HandleSignUp(state *State, sender int, message *Message) {
 	log.Println("SignUp message received!")
 }

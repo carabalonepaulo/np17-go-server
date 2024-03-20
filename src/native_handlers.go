@@ -1,4 +1,4 @@
-package native_handlers
+package main
 
 import (
 	"log"

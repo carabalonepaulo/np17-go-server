@@ -6,7 +6,6 @@ import (
 	"os"
 	"server/src/listener"
 	"server/src/message"
-	"server/src/native_handlers"
 	"server/src/script"
 	"server/src/script/libs"
 	"server/src/state"
@@ -27,7 +26,7 @@ func main() {
 	logOutput := io.MultiWriter(os.Stdout, f)
 	log.SetOutput(logOutput)
 
-	nativeHandlers := native_handlers.NativeHandlers()
+	nativeHandlers := NativeHandlers()
 
 	script := script.NewEngine()
 	log.Println("Script engine initialized!")
@@ -44,7 +43,7 @@ func main() {
 	listener.OnClientDisconnected = script.ClientDisconnected
 	listener.OnMessageReceived = func(sender int, rawMessage string) {
 		message := message.ParseRawMessage(rawMessage)
-		handlerFn := native_handlers.FindHandlerFn(nativeHandlers, message.Name)
+		handlerFn := FindHandlerFn(nativeHandlers, message.Name)
 
 		if handlerFn != nil {
 			handlerFn(state, sender, message)

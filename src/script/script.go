@@ -65,9 +65,13 @@ func (s *Engine) DumpStack() {
 }
 
 func (s *Engine) Init() {
+	// o arquivo inicial retorna uma tabela que é mantida na stack
 	if err := lua.DoFile(s.L, "./scripts/init.lua"); err != nil {
 		log.Fatal(err)
 	}
+
+	// a tabela contendo os callbacks também possui a função de update
+	// essa que também é mantida na stack por performance
 	s.L.Field(CALLBACKS, "update")
 
 	s.L.Field(CALLBACKS, "init")

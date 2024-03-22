@@ -88,14 +88,15 @@ func RegisterListenerLib(l *lua.State, listener *listener.Listener) {
 	l.PushValue(-3)
 	l.SetField(-2, "listener")
 	l.Pop(3)
+}
 
-	// l.PushUserData(state.Listener)
-	// l.CreateTable(0, 0)
-	// l.PushGoFunction(sendTo)
-	// l.SetField(-2, "send_to")
-	// l.SetMetaTable(-2)
-	// l.SetGlobal("listener")
-	// state.Script.DumpStack()
+func listenerFromStack(l *lua.State) *listener.Listener {
+	listener, ok := l.ToUserData(1).(*listener.Listener)
+	if !ok {
+		l.PushString("Failed to cast userdata!")
+		l.Error()
+	}
+	return listener
 }
 
 // listener:get_total_sent(id)
@@ -104,11 +105,7 @@ func totalSent(l *lua.State) int {
 	lua.ArgumentCheck(l, l.IsNumber(2), 2, "expected number")
 
 	id, _ := l.ToNumber(2)
-	listener, ok := l.ToUserData(1).(*listener.Listener)
-	if !ok {
-		l.PushString("Failed to cast userdata!")
-		l.Error()
-	}
+	listener := listenerFromStack(l)
 
 	l.PushInteger(listener.TotalSent(int(id)))
 
@@ -121,11 +118,7 @@ func totalReceived(l *lua.State) int {
 	lua.ArgumentCheck(l, l.IsNumber(2), 2, "expected number")
 
 	id, _ := l.ToNumber(2)
-	listener, ok := l.ToUserData(1).(*listener.Listener)
-	if !ok {
-		l.PushString("Failed to cast userdata!")
-		l.Error()
-	}
+	listener := listenerFromStack(l)
 
 	l.PushInteger(listener.TotalReceived(int(id)))
 
@@ -138,14 +131,10 @@ func sendTo(l *lua.State) int {
 	lua.ArgumentCheck(l, l.IsNumber(2), 2, "expected number")
 	lua.ArgumentCheck(l, l.IsString(3), 3, "expected string")
 
-	listener, ok := l.ToUserData(1).(*listener.Listener)
-	if !ok {
-		l.PushString("Failed to cast userdata!")
-		l.Error()
-	}
-
+	listener := listenerFromStack(l)
 	id, _ := l.ToNumber(2)
 	message, _ := l.ToString(3)
+
 	if !listener.SendTo(int(id), message) {
 		l.PushFString("Failed to send message to client `%d`!", int(id))
 		l.Error()
@@ -160,12 +149,7 @@ func sendToMany(l *lua.State) int {
 	lua.ArgumentCheck(l, l.IsString(2), 2, "expected string")
 	lua.ArgumentCheck(l, l.IsFunction(3), 3, "expected function")
 
-	listener, ok := l.ToUserData(1).(*listener.Listener)
-	if !ok {
-		l.PushString("Failed to cast userdata!")
-		l.Error()
-	}
-
+	listener := listenerFromStack(l)
 	message, _ := l.ToString(2)
 
 	listener.SendToMany(message, func(id int) bool {
@@ -183,12 +167,7 @@ func sendToAll(l *lua.State) int {
 	lua.ArgumentCheck(l, l.IsUserData(1), 1, "expected userdata")
 	lua.ArgumentCheck(l, l.IsString(2), 2, "expected string")
 
-	listener, ok := l.ToUserData(1).(*listener.Listener)
-	if !ok {
-		l.PushString("Failed to cast userdata!")
-		l.Error()
-	}
-
+	listener := listenerFromStack(l)
 	message, _ := l.ToString(2)
 	listener.SendToAll(message)
 
@@ -200,12 +179,7 @@ func kick(l *lua.State) int {
 	lua.ArgumentCheck(l, l.IsUserData(1), 1, "expected userdata")
 	lua.ArgumentCheck(l, l.IsNumber(2), 2, "expected number")
 
-	listener, ok := l.ToUserData(1).(*listener.Listener)
-	if !ok {
-		l.PushString("Failed to cast userdata!")
-		l.Error()
-	}
-
+	listener := listenerFromStack(l)
 	id, _ := l.ToNumber(2)
 	listener.Kick(int(id))
 
@@ -216,12 +190,7 @@ func kick(l *lua.State) int {
 func kickAll(l *lua.State) int {
 	lua.ArgumentCheck(l, l.IsUserData(1), 1, "expected userdata")
 
-	listener, ok := l.ToUserData(1).(*listener.Listener)
-	if !ok {
-		l.PushString("Failed to cast userdata!")
-		l.Error()
-	}
-
+	listener := listenerFromStack(l)
 	listener.KickAll()
 
 	return 0

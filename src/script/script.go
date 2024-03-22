@@ -7,8 +7,14 @@ import (
 	"github.com/Shopify/go-lua"
 )
 
-const CALLBACKS = 1
-const UPDATE = 2
+const (
+	Init = iota + 1
+	Deinit
+	Update
+	OnClientConnected
+	OnClientDisconnected
+	OnMessageReceived
+)
 
 type Engine struct {
 	L          *lua.State
@@ -65,38 +71,42 @@ func (s *Engine) DumpStack() {
 }
 
 func (s *Engine) Init() {
-	// o arquivo inicial retorna uma tabela que é mantida na stack
 	if err := lua.DoFile(s.L, "./scripts/init.lua"); err != nil {
 		log.Fatal(err)
 	}
 
-	// a tabela contendo os callbacks também possui a função de update
-	// essa que também é mantida na stack por performance
-	s.L.Field(CALLBACKS, "update")
+	s.L.Field(1, "init")
+	s.L.Field(1, "deinit")
+	s.L.Field(1, "update")
+	s.L.Field(1, "on_client_connected")
+	s.L.Field(1, "on_client_disconnected")
+	s.L.Field(1, "on_data_received")
 
-	s.L.Field(CALLBACKS, "init")
+	s.L.Remove(1)
+
+	s.L.PushValue(Init)
 	s.L.Call(0, 0)
 }
 
 func (s *Engine) Deinit() {
-	s.L.Field(CALLBACKS, "deinit")
+	s.L.PushValue(Deinit)
 	s.L.Call(0, 0)
 }
 
 func (s *Engine) ClientConnected(clientId int) {
-	s.L.Field(CALLBACKS, "on_client_connected")
+	s.L.PushValue(OnClientConnected)
 	s.L.PushInteger(clientId)
 	s.L.Call(1, 0)
 }
 
 func (s *Engine) ClientDisconnected(clientId int) {
-	s.L.Field(CALLBACKS, "on_client_disconnected")
+	s.L.PushValue(OnClientDisconnected)
 	s.L.PushInteger(clientId)
 	s.L.Call(1, 0)
 }
 
 func (s *Engine) MessageReceived(clientId int, messageName, messageContent string) {
-	s.L.Field(CALLBACKS, "on_data_received")
+	s.L.PushValue(OnMessageReceived)
 	s.L.PushInteger(clientId)
 	s.L.PushString(messageName)
 	s.L.PushString(messageContent)
@@ -104,6 +114,6 @@ func (s *Engine) MessageReceived(clientId int, messageName, messageContent strin
 }
 
 func (s *Engine) Update() {
-	s.L.PushValue(UPDATE)
+	s.L.PushValue(Update)
 	s.L.Call(0, 0)
 }

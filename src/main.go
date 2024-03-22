@@ -59,6 +59,7 @@ func main() {
 		time.Sleep(time.Millisecond)
 		listener.DispatchEvents()
 		workers.Poll()
+		script.Update()
 	}
 
 	script.Deinit()

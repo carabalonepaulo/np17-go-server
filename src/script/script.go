@@ -8,6 +8,7 @@ import (
 )
 
 const CALLBACKS = 1
+const UPDATE = 2
 
 type Engine struct {
 	L          *lua.State
@@ -25,6 +26,7 @@ func NewEngine() *Engine {
 	s := &Engine{L: l, shouldQuit: false, commands: make(chan Command)}
 
 	lua.OpenLibraries(l)
+	lua.DoString(l, "package.path = package.path .. ';' .. './?/init.lua;./scripts/?/init.lua;./scripts/?.lua'")
 
 	return s
 }
@@ -66,6 +68,7 @@ func (s *Engine) Init() {
 	if err := lua.DoFile(s.L, "./scripts/init.lua"); err != nil {
 		log.Fatal(err)
 	}
+	s.L.Field(CALLBACKS, "update")
 
 	s.L.Field(CALLBACKS, "init")
 	s.L.Call(0, 0)
@@ -94,4 +97,9 @@ func (s *Engine) MessageReceived(clientId int, messageName, messageContent strin
 	s.L.PushString(messageName)
 	s.L.PushString(messageContent)
 	s.L.Call(3, 0)
+}
+
+func (s *Engine) Update() {
+	s.L.PushValue(UPDATE)
+	s.L.Call(0, 0)
 }

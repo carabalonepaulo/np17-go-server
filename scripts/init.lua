@@ -1,14 +1,14 @@
-local printf = function(...) print(string.format(...)) end
+local printf = require 'printf'
 local listener = require 'listener'
 
 return {
   init = function()
-    -- print('LuaApi initialized!')
-    -- test:send_to(0, '<0>hello</0>')
   end,
 
   deinit = function()
-    -- print('LuaApi finalized!')
+  end,
+
+  update = function()
   end,
 
   on_client_connected = function(client_id)
@@ -20,16 +20,11 @@ return {
   end,
 
   on_data_received = function(client_id, message_name, message_content)
-    printf('Message `%s` received from client `%d`!', message_name, client_id)
-    -- printf('Total received: `%d`', listener:get_total_received(client_id))
-
-    if message_name == '<0>' then
-      local packet = string.format("<0 %d>'e' n=%s</0>", client_id, 'server_name')
-      listener:send_to(client_id, packet)
+    local success, handler = pcall(require, 'handlers.' .. message_name)
+    if success then
+      handler(client_id, message_content)
+    else
+      printf('No handler found for packet `%s`!', message_name)
     end
-
-    -- listener:send_to_many('<0>hello world</0>', function(id)
-    --   return false
-    -- end)
   end,
 }

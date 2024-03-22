@@ -34,7 +34,6 @@ func NativeHandlers() []Handler {
 
 func HandleAuth(state *State, sender int, message *Message) {
 	log.Println("Auth message received!")
-	state.Listener.Kick(sender)
 }
 
 func HandleSignIn(state *State, sender int, message *Message) {

@@ -1,3 +1,4 @@
 #!/bin/bash
 
-go run src/*.go
+files=$(find src -maxdepth 1 -type f -name "*.go" ! -name "*_test.go")
+go run $files

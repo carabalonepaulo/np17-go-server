@@ -6,6 +6,7 @@ import (
 )
 
 type State struct {
-	Listener *listener.Listener
-	Script   *script.Engine
+	listener *listener.Listener
+	script   *script.Engine
+	workers  *WorkerPool
 }

@@ -209,7 +209,7 @@ func (s *Listener) beginSend(c *Client) {
 		if err != nil {
 			fail(err)
 		}
-		c.totalSent += int(len(message))
+		c.totalSent += len(message)
 
 		// se a mensagem não tiver um separador... evita recriar a string
 		if message[len(message)-1] != '\n' {
@@ -218,6 +218,8 @@ func (s *Listener) beginSend(c *Client) {
 			}
 			c.totalSent += 1
 		}
+
+		w.Flush()
 	}
 }
 

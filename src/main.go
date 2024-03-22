@@ -10,9 +10,10 @@ import (
 	"time"
 )
 
-const host string = "0.0.0.0"
-const port int = 50000
-const maxClients int = 1024
+const Host = "0.0.0.0"
+const Port = 5000
+const MaxClients = 1024
+const MaxWorkers = 16
 
 func main() {
 	f, err := os.OpenFile("data/log.txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
@@ -24,18 +25,19 @@ func main() {
 	logOutput := io.MultiWriter(os.Stdout, f)
 	log.SetOutput(logOutput)
 
+	workers := NewWorkerPool(MaxWorkers)
 	nativeHandlers := NativeHandlers()
 
 	script := script.NewEngine()
 	log.Println("Script engine initialized!")
 
-	listener, err := listener.NewListener(host, port, maxClients)
+	listener, err := listener.NewListener(Host, Port, MaxClients)
 	if err != nil {
 		log.Fatal(err)
 	}
 	log.Println("Listener initialized!")
 
-	state := &State{Listener: listener, Script: script}
+	state := &State{listener: listener, script: script, workers: workers}
 
 	listener.OnClientConnected = script.ClientConnected
 	listener.OnClientDisconnected = script.ClientDisconnected
@@ -56,6 +58,7 @@ func main() {
 	for listener.Running() {
 		time.Sleep(time.Millisecond)
 		listener.DispatchEvents()
+		workers.Poll()
 	}
 
 	script.Deinit()

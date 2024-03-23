@@ -1,19 +1,24 @@
 package main
 
 import (
+	"database/sql"
 	"io"
 	"log"
 	"os"
 	"server/src/listener"
 	"server/src/script"
 	"server/src/script/libs"
+	"server/src/weave"
 	"time"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 const Host = "0.0.0.0"
 const Port = 5000
 const MaxClients = 1024
 const MaxWorkers = 16
+const DatabasePath = "./data/server.db"
 
 func main() {
 	f, err := os.OpenFile("data/log.txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
@@ -25,7 +30,7 @@ func main() {
 	logOutput := io.MultiWriter(os.Stdout, f)
 	log.SetOutput(logOutput)
 
-	workers := NewWorkerPool(MaxWorkers)
+	workers := weave.NewWorkerPool(32)
 	nativeHandlers := NativeHandlers()
 
 	script := script.NewEngine()
@@ -37,7 +42,12 @@ func main() {
 	}
 	log.Println("Listener initialized!")
 
-	state := &State{listener: listener, script: script, workers: workers}
+	db, err := sql.Open("sqlite3", DatabasePath)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	state := &State{listener: listener, script: script, workers: workers, db: db}
 
 	listener.OnClientConnected = script.ClientConnected
 	listener.OnClientDisconnected = script.ClientDisconnected
@@ -57,8 +67,8 @@ func main() {
 
 	for listener.Running() {
 		time.Sleep(time.Millisecond)
-		listener.DispatchEvents()
 		workers.Poll()
+		listener.DispatchEvents()
 		script.Update()
 	}
 

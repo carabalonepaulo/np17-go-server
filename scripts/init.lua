@@ -1,5 +1,7 @@
 local printf = require 'printf'
 local listener = require 'listener'
+local log = require 'log'
+log.printf = function(...) log.print(string.format(...)) end
 
 return {
   init = function()
@@ -12,11 +14,11 @@ return {
   end,
 
   on_client_connected = function(client_id)
-    printf('Client `%d` connected!', client_id)
+    log.printf('Client `%d` connected!', client_id)
   end,
 
   on_client_disconnected = function(client_id)
-    printf('Client `%d` disconnected!', client_id)
+    log.printf('Client `%d` disconnected!', client_id)
   end,
 
   on_data_received = function(client_id, message_name, message_content)
@@ -24,7 +26,7 @@ return {
     if success then
       handler(client_id, message_content)
     else
-      printf('No handler found for packet `%s`!', message_name)
+      log.printf('No handler found for packet `%s`!', message_name)
     end
   end,
 }

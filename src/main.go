@@ -19,9 +19,10 @@ const Port = 5000
 const MaxClients = 1024
 const MaxWorkers = 16
 const DatabasePath = "./data/server.db"
+const LogPath = "./data/log.txt"
 
 func main() {
-	f, err := os.OpenFile("data/log.txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	f, err := os.OpenFile(LogPath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		log.Fatalf("Error opening file: %v", err)
 	}
@@ -30,7 +31,7 @@ func main() {
 	logOutput := io.MultiWriter(os.Stdout, f)
 	log.SetOutput(logOutput)
 
-	workers := weave.NewWorkerPool(32)
+	workers := weave.NewWorkerPool(MaxWorkers)
 	nativeHandlers := NativeHandlers()
 
 	script := script.NewEngine()
@@ -62,6 +63,7 @@ func main() {
 		}
 	}
 
+	libs.RegisterLogLib(script.L)
 	libs.RegisterListenerLib(script.L, listener)
 	script.Init()
 

@@ -1,8 +1,8 @@
 package script
 
 import (
-	"fmt"
 	"log"
+	"server/src/script/libs"
 
 	"github.com/Shopify/go-lua"
 )
@@ -38,36 +38,7 @@ func NewEngine() *Engine {
 }
 
 func (s *Engine) DumpStack() {
-	size := s.L.Top()
-	fmt.Println("-----------------------------------")
-	fmt.Printf("- Stack: %d\n", size)
-	fmt.Println("-----------------------------------")
-	for i := 1; i <= size; i++ {
-		fmt.Printf("> [%d / -%d] ", i, size-i+1)
-		switch {
-		case s.L.IsNumber(i):
-			value, _ := s.L.ToNumber(i)
-			fmt.Printf("%.2f\n", value)
-		case s.L.IsBoolean(i):
-			value := s.L.ToBoolean(i)
-			fmt.Printf("%t\n", value)
-		case s.L.IsFunction(i):
-			fmt.Println("function")
-		case s.L.IsTable(i):
-			fmt.Println("table")
-		case s.L.IsGoFunction(i):
-			fmt.Println("native function")
-		case s.L.IsUserData(i):
-			fmt.Println("userdata")
-		case s.L.IsLightUserData(i):
-			fmt.Println("lighuserdata")
-		case s.L.IsThread(i):
-			fmt.Println("coroutine")
-		case s.L.IsNil(i):
-			fmt.Println("nil")
-		}
-	}
-	fmt.Println("-----------------------------------")
+	libs.DumpStack(s.L)
 }
 
 func (s *Engine) Init() {

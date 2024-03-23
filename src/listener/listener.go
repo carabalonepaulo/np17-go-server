@@ -171,7 +171,6 @@ func (s *Listener) beginAccept() {
 		}
 
 		s.clients[c.id] = c
-		fmt.Printf("[Accept] Slot[%d] == nil // %t\n", c.id, (s.clients[c.id] == nil))
 		s.events <- ClientConnected{id: c.id}
 
 		// enviar e receber são operações bloqueantas

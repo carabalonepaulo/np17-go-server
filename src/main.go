@@ -8,8 +8,9 @@ import (
 	"server/src/listener"
 	"server/src/script"
 	"server/src/script/libs"
-	"server/src/weave"
 	"time"
+
+	"github.com/carabalonepaulo/weave"
 
 	_ "github.com/mattn/go-sqlite3"
 )

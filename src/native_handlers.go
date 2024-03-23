@@ -2,7 +2,8 @@ package main
 
 import (
 	"log"
-	"server/src/weave"
+
+	"github.com/carabalonepaulo/weave"
 )
 
 type HandlerFn func(

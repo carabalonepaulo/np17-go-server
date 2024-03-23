@@ -1,5 +1,9 @@
 github.com/Shopify/go-lua v0.0.0-20240312125312-5d657e363856 h1:N32EXb3LZ0FJwbdoMokLXysTHgWHccuYUPxmVqPowkw=
 github.com/Shopify/go-lua v0.0.0-20240312125312-5d657e363856/go.mod h1:M4CxjVc/1Nwka5atBv7G/sb7Ac2BDe3+FxbiT9iVNIQ=
+github.com/carabalonepaulo/weave v0.0.0-20240323211447-df489880365f h1:dsyr7jW7zu+9ZbEkj0lpw+oCQxhjgxJolHcXl5m9Az0=
+github.com/carabalonepaulo/weave v0.0.0-20240323211447-df489880365f/go.mod h1:fWKGa92OFo/xDhne391QUnqv8vDIx3dDDjcWiz6/kck=
+github.com/carabalonepaulo/weave v0.0.0-20240323212926-b1181488aa5d h1:Z69sAMabDXjGe08VH5cqnjJoXyqAolJzpp/vT53ADoQ=
+github.com/carabalonepaulo/weave v0.0.0-20240323212926-b1181488aa5d/go.mod h1:cuRzfLsILPHrPk6lB0qbbwZlfi84qnQJksDKBiCnTFo=
 github.com/golang-collections/collections v0.0.0-20130729185459-604e922904d3 h1:zN2lZNZRflqFyxVaTIU61KNKQ9C0055u9CAfpmqUvo4=
 github.com/golang-collections/collections v0.0.0-20130729185459-604e922904d3/go.mod h1:nPpo7qLxd6XL3hWJG/O60sR8ZKfMCiIoNap5GvD12KU=
 github.com/mattn/go-sqlite3 v1.14.22 h1:2gZY6PC6kBnID23Tichd1K+Z0oS6nE/XwU+Vz/5o4kU=

@@ -4,7 +4,8 @@ import (
 	"database/sql"
 	"server/src/listener"
 	"server/src/script"
-	"server/src/weave"
+
+	"github.com/carabalonepaulo/weave"
 )
 
 type State struct {
